@@ -32,6 +32,36 @@ fn detects_native_crash_from_fixture() {
 }
 
 #[test]
+fn detects_anr_from_fixture() {
+    let report = analyze_text(&fixture("anr_trace.log"));
+
+    assert_eq!(report.findings.len(), 1);
+    assert_eq!(report.findings[0].kind, FindingKind::Anr);
+}
+
+#[test]
+fn detects_oom_from_fixture() {
+    let report = analyze_text(&fixture("oom_exception.log"));
+
+    assert_eq!(report.findings.len(), 1);
+    assert!(
+        report.findings[0]
+            .root_cause
+            .as_deref()
+            .unwrap_or_default()
+            .contains("OutOfMemoryError")
+    );
+}
+
+#[test]
+fn detects_jni_error_from_fixture() {
+    let report = analyze_text(&fixture("jni_error.log"));
+
+    assert_eq!(report.findings.len(), 1);
+    assert_eq!(report.findings[0].kind, FindingKind::JniError);
+}
+
+#[test]
 fn ignores_noise_only_fixture() {
     let report = analyze_text(&fixture("noise_only.log"));
 
