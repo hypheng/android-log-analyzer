@@ -1,5 +1,3 @@
-use std::fmt;
-
 use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -50,6 +48,9 @@ pub struct Finding {
     pub process: Option<String>,
     pub thread: Option<String>,
     pub exception: Option<String>,
+    pub root_cause: Option<String>,
+    pub signature: String,
+    pub occurrence_count: usize,
     pub evidence: Vec<EvidenceLine>,
 }
 
@@ -72,58 +73,16 @@ pub enum Severity {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-pub struct AnalysisReport {
-    pub findings: Vec<Finding>,
-    pub parse_warnings: Vec<ParseWarning>,
+pub struct ReportSummary {
+    pub total_findings: usize,
+    pub parse_warning_count: usize,
+    pub top_severity: Option<Severity>,
+    pub root_cause_candidates: Vec<String>,
 }
 
-impl fmt::Display for AnalysisReport {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if self.findings.is_empty() {
-            writeln!(f, "No high-confidence crash findings detected.")?;
-        } else {
-            writeln!(f, "Likely crash findings: {}", self.findings.len())?;
-
-            for (index, finding) in self.findings.iter().enumerate() {
-                writeln!(
-                    f,
-                    "\n{}. [{:?}] {:?} at lines {}-{}",
-                    index + 1,
-                    finding.severity,
-                    finding.kind,
-                    finding.line_start,
-                    finding.line_end
-                )?;
-                writeln!(f, "   Title: {}", finding.title)?;
-                writeln!(f, "   Why: {}", finding.rationale)?;
-
-                if let Some(process) = &finding.process {
-                    writeln!(f, "   Process: {process}")?;
-                }
-
-                if let Some(thread) = &finding.thread {
-                    writeln!(f, "   Thread: {thread}")?;
-                }
-
-                if let Some(exception) = &finding.exception {
-                    writeln!(f, "   Exception: {exception}")?;
-                }
-
-                writeln!(f, "   Evidence:")?;
-                for evidence in &finding.evidence {
-                    writeln!(f, "     L{} {}", evidence.line_number, evidence.message)?;
-                }
-            }
-        }
-
-        if !self.parse_warnings.is_empty() {
-            writeln!(
-                f,
-                "\nParse warnings: {} line(s) did not match a structured logcat format.",
-                self.parse_warnings.len()
-            )?;
-        }
-
-        Ok(())
-    }
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct AnalysisReport {
+    pub summary: ReportSummary,
+    pub findings: Vec<Finding>,
+    pub parse_warnings: Vec<ParseWarning>,
 }

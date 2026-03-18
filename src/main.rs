@@ -2,8 +2,14 @@ use std::fs;
 use std::io::{self, Read};
 use std::path::PathBuf;
 
-use android_log_analyzer::analyze_text;
-use clap::Parser;
+use android_log_analyzer::{OutputFormat, analyze_text, render_report};
+use clap::{Parser, ValueEnum};
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum Format {
+    Text,
+    Json,
+}
 
 #[derive(Debug, Parser)]
 #[command(name = "android-log-analyzer")]
@@ -11,14 +17,24 @@ use clap::Parser;
 struct Cli {
     #[arg(value_name = "LOG_FILE")]
     input: Option<PathBuf>,
+
+    #[arg(long, value_enum, default_value_t = Format::Text)]
+    format: Format,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
     let input = read_input(cli.input)?;
     let report = analyze_text(&input);
+    let rendered = render_report(
+        &report,
+        match cli.format {
+            Format::Text => OutputFormat::Text,
+            Format::Json => OutputFormat::Json,
+        },
+    )?;
 
-    println!("{report}");
+    println!("{rendered}");
     Ok(())
 }
 
