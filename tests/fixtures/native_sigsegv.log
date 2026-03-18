@@ -1,0 +1,4 @@
+03-18 11:20:11.001  3333  3333 F libc    : Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x0
+03-18 11:20:11.002  3333  3333 F DEBUG   : Abort message: 'terminating due to signal 11'
+03-18 11:20:11.003  3333  3333 F DEBUG   : backtrace:
+03-18 11:20:11.004  3333  3333 F DEBUG   :       #00 pc 0000000000012345  /apex/libfoo.so

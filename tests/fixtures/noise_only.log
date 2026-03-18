@@ -1,0 +1,2 @@
+03-18 11:20:11.001  3333  3333 I ActivityManager: Start proc 1234:com.example.demo/u0a321 for activity
+03-18 11:20:11.002  3333  3333 D DemoTag: just a normal debug line
