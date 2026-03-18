@@ -16,6 +16,47 @@ The first functional milestone is an MVP that:
 - intelligently deduplicates repeated signals
 - emits human-readable text and JSON reports
 
+## Supported Signals
+
+- `FATAL EXCEPTION`
+- `ANR in ...`
+- native fatal signals such as `SIGSEGV` and `SIGABRT`
+- `Abort message:`
+- `OutOfMemoryError`
+- `JNI DETECTED ERROR IN APPLICATION`
+
+## Usage
+
+Build locally:
+
+```bash
+cargo build
+```
+
+Analyze a saved `logcat` file:
+
+```bash
+cargo run -- tests/fixtures/java_fatal_exception.log
+```
+
+Emit JSON instead of text:
+
+```bash
+cargo run -- --format json tests/fixtures/repeated_fatal_exception.log
+```
+
+Pipe `adb logcat` directly through `stdin` and write the report to a file:
+
+```bash
+adb logcat -d | cargo run -- --format json --output report.json
+```
+
+Install the CLI into your cargo bin directory:
+
+```bash
+cargo install --path .
+```
+
 ## Workflow
 
 - Architect drives issue breakdown, architecture, and PR review
