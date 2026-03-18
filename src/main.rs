@@ -20,6 +20,9 @@ struct Cli {
 
     #[arg(long, value_enum, default_value_t = Format::Text)]
     format: Format,
+
+    #[arg(long, value_name = "OUTPUT_FILE")]
+    output: Option<PathBuf>,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -33,8 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Format::Json => OutputFormat::Json,
         },
     )?;
-
-    println!("{rendered}");
+    write_output(cli.output, &rendered)?;
     Ok(())
 }
 
@@ -47,4 +49,17 @@ fn read_input(path: Option<PathBuf>) -> Result<String, Box<dyn std::error::Error
             Ok(buffer)
         }
     }
+}
+
+fn write_output(path: Option<PathBuf>, rendered: &str) -> Result<(), Box<dyn std::error::Error>> {
+    match path {
+        Some(path) => {
+            fs::write(path, rendered)?;
+        }
+        None => {
+            println!("{rendered}");
+        }
+    }
+
+    Ok(())
 }
