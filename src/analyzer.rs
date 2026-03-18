@@ -271,7 +271,6 @@ fn is_primary_anchor(line: &LogLine) -> bool {
             FindingKind::FatalException
                 | FindingKind::Anr
                 | FindingKind::NativeCrash
-                | FindingKind::OutOfMemory
                 | FindingKind::JniError
         )
     )
