@@ -15,3 +15,11 @@ The first functional milestone is an MVP that:
 - groups evidence into findings
 - intelligently deduplicates repeated signals
 - emits human-readable text and JSON reports
+
+## Workflow
+
+- Architect drives issue breakdown, architecture, and PR review
+- Developer picks the next unfinished `requirement` or `bug` issue and ships it with tests
+- Acceptance validates delivered requirements and opens `bug` issues for failures
+
+See [workflow.md](docs/workflow.md), [architecture.md](docs/architecture.md), and [acceptance.md](docs/acceptance.md).
